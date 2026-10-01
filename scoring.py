@@ -45,6 +45,39 @@ def find_tied_axes(scores):
     return [axis_id for axis_id, score in scores.items() if score == 50.0]
 
 
+def infer_tie_answers(questions, answers, axes, scores):
+    """Resolve exact ties without asking an additional question.
+
+    The graph remains 50/50. For the four-letter code only, the strongest
+    non-neutral response on that axis is used. If every response is neutral,
+    the first pole provides a stable fallback because a four-letter type still
+    requires one letter per axis.
+    """
+    choices = {}
+
+    for axis_id in find_tied_axes(scores):
+        axis = axes[axis_id]
+        axis_questions = [q for q in questions if q["axis"] == axis_id]
+        strongest = max(
+            axis_questions,
+            key=lambda question: abs(answers[question["id"]] - 3),
+        )
+        answer = answers[strongest["id"]]
+
+        if answer == 3:
+            choices[axis_id] = axis["first_code"]
+        elif answer > 3:
+            choices[axis_id] = strongest["agree_pole"]
+        else:
+            choices[axis_id] = (
+                axis["second_code"]
+                if strongest["agree_pole"] == axis["first_code"]
+                else axis["first_code"]
+            )
+
+    return choices
+
+
 def build_type_code(scores, axes, tie_answers=None):
     """Build the four-letter type code in the order defined by ``axes``."""
     tie_answers = tie_answers or {}
