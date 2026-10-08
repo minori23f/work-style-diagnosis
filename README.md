@@ -3,9 +3,7 @@
 24の質問から、仕事における考え方や行動傾向を
 4軸・16タイプで可視化するWebアプリです。
 
-[▶ 診断を試す](ここにStreamlitのURL)
-
-![アプリ画面](docs/images/app-preview.png)
+[▶ 診断を試す](https://work-style-diagnosis-5cwwl6ghakzdw857g5dzev.streamlit.app/)
 
 ## 制作背景
 
